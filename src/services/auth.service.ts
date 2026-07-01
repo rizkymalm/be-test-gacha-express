@@ -1,31 +1,35 @@
-import authModels from "../models/auth.model.ts";
+import authModels from '../models/auth.model.ts';
 
 interface PropsAuth {
     username: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  role: string
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    role: string;
 }
 
-// services/authService.ts
 export async function authRegister({
-  username,
-  email,
-  password,
-  firstName,
-  lastName,
-  role
-}: PropsAuth) {
-  const newUser = new authModels({
     username,
     email,
     password,
     firstName,
     lastName,
-    role
-  });
+    role,
+}: PropsAuth) {
+    const newUser = new authModels({
+        username,
+        email,
+        password,
+        firstName,
+        lastName,
+        role,
+    });
 
-  return await newUser.save();
+    return await newUser.save();
+}
+
+export async function authLogin({ email }: any) {
+    const user = authModels.findOne({ email: email });
+    return user.exec();
 }
