@@ -1,10 +1,12 @@
 import { Request } from 'express';
+import type { Types } from 'mongoose';
 
 // Define the shape of your decoded JWT payload
 export interface UserPayload {
-    id: string;
+    id: Types.ObjectId;
     username: string;
-    role?: string;
+    email: string;
+    role?: Types.ObjectId;
 }
 
 // Extend the global Express namespace

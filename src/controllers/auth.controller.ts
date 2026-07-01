@@ -3,8 +3,13 @@ import 'dotenv/config';
 import type { Request, Response } from 'express';
 import { authLogin, authRegister } from '../services/auth.service.ts';
 
-import pkg from 'jsonwebtoken';
-const { sign } = pkg;
+import jwt, { type VerifyErrors } from 'jsonwebtoken';
+
+import type { UserPayload } from '../types.js';
+import {
+    generateAccessToken,
+    generateRefreshToken,
+} from '../utils/generateAccessToken.ts';
 
 export async function authGet(req: Request, res: Response) {
     try {
@@ -61,21 +66,21 @@ export async function postLogin(req: Request, res: Response) {
                     message: 'Password not match!',
                 });
             } else {
-                const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
                 const payload = {
                     id: login._id,
                     username: login.username,
                     email: login.email,
                     role: login.role,
                 };
-                const accessToken = sign(payload, accessTokenSecret || '', {
-                    expiresIn: '15m',
-                });
+                const accessToken = generateAccessToken(payload);
+                const refreshToken = generateRefreshToken(payload);
 
                 res.json({
                     message: 'Login user success',
-                    data: login,
-                    accessToken: accessToken,
+                    token: {
+                        accessToken: accessToken,
+                        refreshToken: refreshToken,
+                    },
                 });
             }
         }
@@ -84,4 +89,45 @@ export async function postLogin(req: Request, res: Response) {
             message: error.message || 'An error occurred during registration',
         });
     }
+}
+
+let activeRefreshTokens: string[] = [];
+
+export async function postRefreshToken(req: Request, res: Response) {
+    const refreshToken = req.headers['authorization'];
+    const token = refreshToken && refreshToken.split(' ')[1];
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'Refresh token missing' });
+    }
+
+    jwt.verify(
+        token!,
+        process.env.REFRESH_TOKEN_SECRET!,
+        async (err: VerifyErrors | null, decoded: any) => {
+            if (err) {
+                return res
+                    .status(403)
+                    .json({ message: 'Refresh token expired or tampered' });
+            }
+
+            try {
+                const user: UserPayload = {
+                    id: decoded.id,
+                    username: decoded.username,
+                    email: decoded.email,
+                    role: decoded.role,
+                };
+                const newAccessToken = generateAccessToken(user);
+
+                return res.json({
+                    token: { accessToken: newAccessToken, refreshToken: token },
+                });
+            } catch (dbError) {
+                return res
+                    .status(500)
+                    .json({ message: 'Internal server error' });
+            }
+        }
+    );
 }
