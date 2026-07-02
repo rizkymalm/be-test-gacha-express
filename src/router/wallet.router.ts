@@ -4,6 +4,6 @@ import { getWallet } from '../controllers/wallet.controller.ts';
 
 const walletRouter = express.Router();
 
-walletRouter.get('/', authenticateToken , getWallet);
+walletRouter.get('/amount', authenticateToken, getWallet);
 
 export default walletRouter;

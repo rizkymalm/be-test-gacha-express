@@ -45,8 +45,7 @@ export async function postRegister(req: Request, res: Response) {
             balance: 500,
         });
 
-
-        const transaction = await transactionCreate({
+        await transactionCreate({
             wallet: wallet._id,
             amount: 500,
             type: 'IN',
@@ -95,9 +94,11 @@ export async function postLogin(req: Request, res: Response) {
 
                 res.json({
                     message: 'Login user success',
-                    token: {
-                        accessToken: accessToken,
-                        refreshToken: refreshToken,
+                    data: {
+                        token: {
+                            accessToken: accessToken,
+                            refreshToken: refreshToken,
+                        },
                     },
                 });
             }
