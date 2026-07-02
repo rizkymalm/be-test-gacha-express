@@ -5,12 +5,12 @@ import {
     postLogin,
     postRegister,
 } from '../controllers/auth.controller.ts';
-import { loginRules } from '../lib/userValidationRules.ts';
+import { loginRules, registerRules } from '../lib/userValidationRules.ts';
 
 const authRouter = express.Router();
 
 authRouter.get('/', authGet);
-authRouter.post('/register', postRegister);
+authRouter.post('/register', registerRules, postRegister);
 authRouter.post('/login', loginRules, postLogin);
 authRouter.post('/refresh-token', postRefreshToken);
 

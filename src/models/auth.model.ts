@@ -1,4 +1,4 @@
-import mongoose, { Mongoose, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const authSchema = new mongoose.Schema(
     {
@@ -22,7 +22,6 @@ const authSchema = new mongoose.Schema(
         },
         lastName: {
             type: String,
-            required: true,
         },
         role: {
             type: Schema.Types.ObjectId,

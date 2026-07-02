@@ -10,6 +10,9 @@ import {
     generateAccessToken,
     generateRefreshToken,
 } from '../utils/generateAccessToken.ts';
+import { walletCreate } from '../services/wallet.service.ts';
+import { transactionCreate } from '../services/transaction.service.ts';
+import { Description, ReferenceType } from '../constants/transaction.enum.ts';
 
 export async function authGet(req: Request, res: Response) {
     try {
@@ -28,7 +31,7 @@ export async function postRegister(req: Request, res: Response) {
         const { username, password, email, firstName, lastName, role } =
             req.body;
         const hashedPass = await bcrypt.hash(password, 10);
-        const save = await authRegister({
+        const auth = await authRegister({
             username,
             email,
             password: hashedPass,
@@ -37,9 +40,24 @@ export async function postRegister(req: Request, res: Response) {
             role,
         });
 
+        const wallet = await walletCreate({
+            user: auth._id,
+            balance: 500,
+        });
+
+
+        const transaction = await transactionCreate({
+            wallet: wallet._id,
+            amount: 500,
+            type: 'IN',
+            referenceType: ReferenceType.REGISTER,
+            referenceId: '123',
+            description: Description.REGISTER,
+        });
+
         res.json({
             message: 'save user success',
-            data: save,
+            data: auth,
         });
     } catch (error: any) {
         res.status(404).json({
