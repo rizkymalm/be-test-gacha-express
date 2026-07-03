@@ -5,6 +5,7 @@ const itemSchema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
+            unique: true,
         },
         image: {
             type: String,
@@ -18,6 +19,10 @@ const itemSchema = new mongoose.Schema(
         dropRate: {
             type: Number,
             required: true,
+        },
+        isDelete: {
+            type: Boolean,
+            default: false,
         },
     },
     {

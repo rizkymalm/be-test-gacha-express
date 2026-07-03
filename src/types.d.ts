@@ -18,3 +18,6 @@ declare global {
     }
 }
 
+export interface PropId {
+    id: Types.ObjectId | string | string[]
+}

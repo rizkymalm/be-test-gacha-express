@@ -9,7 +9,7 @@ export async function getRoleList(req: Request, res: Response) {
 
         if (!userId || !roleId) return undefined;
 
-        const checkRole = await isAdmin(roleId);
+        const checkRole = await isAdmin({ id: roleId || '' });
         if (checkRole) {
             const data = await roleList();
             res.json({
@@ -36,7 +36,7 @@ export async function getRoleDetail(req: Request, res: Response) {
 
         if (!userId || !roleId) return undefined;
 
-        const checkRole = await isAdmin(roleId);
+        const checkRole = await isAdmin({ id: roleId || '' });
         if (checkRole) {
             const data = await roleDetail({ role: id! });
             res.json({
