@@ -110,8 +110,6 @@ export async function postLogin(req: Request, res: Response) {
     }
 }
 
-let activeRefreshTokens: string[] = [];
-
 export async function postRefreshToken(req: Request, res: Response) {
     const refreshToken = req.headers['authorization'];
     const token = refreshToken && refreshToken.split(' ')[1];
@@ -140,7 +138,12 @@ export async function postRefreshToken(req: Request, res: Response) {
                 const newAccessToken = generateAccessToken(user);
 
                 return res.json({
-                    token: { accessToken: newAccessToken, refreshToken: token },
+                    data: {
+                        token: {
+                            accessToken: newAccessToken,
+                            refreshToken: token,
+                        },
+                    },
                 });
             } catch (dbError) {
                 return res

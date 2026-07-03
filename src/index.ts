@@ -8,6 +8,9 @@ import authRouter from './router/auth.router.ts';
 import userRouter from './router/user.router.ts';
 import cookieParser from 'cookie-parser';
 import walletRouter from './router/wallet.router.ts';
+import gachaRouter from './router/gacha.router.ts';
+import itemRouter from './router/item.router.ts';
+import roleRouter from './router/role.router.ts';
 
 const app = express();
 const port = process.env.PORT;
@@ -21,8 +24,11 @@ connectDB();
 
 app.use('', router);
 app.use('/auth', authRouter);
+app.use('/role', roleRouter)
 app.use('/user', userRouter);
 app.use('/wallet', walletRouter);
+app.use('/gacha', gachaRouter);
+app.use('/item', itemRouter)
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
