@@ -1,4 +1,4 @@
-import type { Types } from 'mongoose';
+import type { ClientSession, Types } from 'mongoose';
 import walletModels from '../models/wallet.model.ts';
 
 interface PropWallet {
@@ -9,6 +9,7 @@ interface PropWallet {
 interface PropWalletUpdate {
     id: Types.ObjectId | string | string[];
     balance: number;
+    session: ClientSession;
 }
 
 export async function walletGet({
@@ -29,7 +30,11 @@ export async function walletCreate({ user, balance }: PropWallet) {
     return await newWallet.save();
 }
 
-export async function walletUpdateBalance({ id, balance }: PropWalletUpdate) {
+export async function walletUpdateBalance({
+    id,
+    balance,
+    session,
+}: PropWalletUpdate) {
     const update = await walletModels
         .updateOne(
             {
@@ -39,7 +44,8 @@ export async function walletUpdateBalance({ id, balance }: PropWalletUpdate) {
                 $set: {
                     balance: balance,
                 },
-            }
+            },
+            { session }
         )
         .exec();
 

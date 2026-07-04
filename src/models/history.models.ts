@@ -14,12 +14,8 @@ const historySchema = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             required: true,
         },
-        transaction: {
-            type: Schema.Types.ObjectId,
-            required: true,
-        },
-        inventory: {
-            type: Schema.Types.ObjectId,
+        referenceId: {
+            type: String,
             required: true,
         },
         cost: {

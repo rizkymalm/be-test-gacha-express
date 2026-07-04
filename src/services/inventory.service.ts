@@ -42,3 +42,26 @@ export async function insertInventory({ user, item }: Props) {
         return inventory;
     }
 }
+
+export async function bulkWriteInventory({ data, user, session }: any) {
+    let updateInventory = [];
+    for (let i = 0; i < data.length; i++) {
+        updateInventory.push({
+            updateOne: {
+                filter: {
+                    user: user,
+                    item: data[i]._id,
+                },
+                update: {
+                    $inc: {
+                        quantity: data[i].quantity,
+                    },
+                },
+                upsert: true,
+            },
+        });
+    }
+
+    const update = inventoryModel.bulkWrite(updateInventory, { session });
+    return update;
+}

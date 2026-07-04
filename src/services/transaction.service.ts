@@ -2,7 +2,7 @@ import type { Types } from 'mongoose';
 import transactionModels from '../models/transaction.model.ts';
 import { ReferenceType } from '../constants/transaction.enum.ts';
 
-type Reference = keyof typeof ReferenceType
+type Reference = keyof typeof ReferenceType;
 
 interface PropTransaction {
     wallet: Types.ObjectId;
@@ -31,4 +31,9 @@ export async function transactionCreate({
     });
 
     return await newTransaction.save();
+}
+
+export async function transactionCreateMany({ data }: any) {
+    const transaction = transactionModels.insertMany(data);
+    return await transaction;
 }

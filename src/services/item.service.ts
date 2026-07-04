@@ -20,6 +20,9 @@ export async function itemGet({ limit, page }: PropItemGet) {
             },
         },
         {
+            $unset: ['createdAt', 'updatedAt'],
+        },
+        {
             $limit: parseInt(limit),
         },
         {

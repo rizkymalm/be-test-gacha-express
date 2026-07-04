@@ -1,27 +1,38 @@
 import type { Request, Response } from 'express';
 import { weightedRandom } from '../utils/weightedRandom.ts';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { walletGet, walletUpdateBalance } from '../services/wallet.service.ts';
-import { transactionCreate } from '../services/transaction.service.ts';
 import {
     Description,
     ReferenceIdPrefix,
     ReferenceType,
 } from '../constants/transaction.enum.ts';
 import { generateRefId } from '../utils/generateRefId.ts';
-import { insertInventory } from '../services/inventory.service.ts';
-import { historyCreate } from '../services/history.service.ts';
+import { bulkWriteInventory } from '../services/inventory.service.ts';
+import { groupItemGacha } from '../utils/groupItemGacha.ts';
+import transactionModels from '../models/transaction.model.ts';
+import historyModels from '../models/history.models.ts';
+
+interface PropsShowItem {
+    _id: Types.ObjectId | string | string[];
+    name: string;
+    image: string;
+    tier: string;
+    dropRate: number;
+}
 
 export async function getRandomGacha(req: Request, res: Response) {
     const session = await mongoose.startSession();
     try {
         const userId = req.user?.id;
+        const countQuery = req.query.count;
         if (!userId) return undefined;
-        const random = await weightedRandom();
+        const count = countQuery ? parseInt(`${countQuery}`) : 1;
+        let data: PropsShowItem[] = [];
 
         // 1. check balance
         const walletUser = await walletGet({ user: userId });
-        if (walletUser && walletUser?.balance < 10) {
+        if (walletUser && walletUser?.balance < 10 * count) {
             return res.status(402).json({
                 status: 'Payment Required',
                 errors: {
@@ -29,44 +40,56 @@ export async function getRandomGacha(req: Request, res: Response) {
                 },
             });
         }
+        // 2. random gacha
+        for (let i = 0; i < count; i++) {
+            const random = await weightedRandom();
+            data.push(random);
+        }
+        // 3. group reward item
+        const group = await groupItemGacha(data);
 
+        const transaction = data.map(() => ({
+            wallet: walletUser?._id,
+            amount: 10,
+            description: Description.GACHA,
+            referenceType: ReferenceType.GACHA,
+            referenceId: generateRefId(ReferenceIdPrefix.GACHA),
+            type: 'OUT',
+        }));
+
+        const history = data.map((item, index: number) => ({
+            user: userId,
+            item: item._id,
+            wallet: walletUser?.id,
+            referenceId: transaction[index]?.referenceId,
+            cost: 10,
+        }));
         await session.withTransaction(async () => {
-            // 2. update wallet by ID
+            // 4. update wallet by ID
             if (!walletUser) return undefined;
 
             await walletUpdateBalance({
                 id: walletUser?._id,
-                balance: walletUser?.balance - 10,
+                balance: walletUser?.balance - 10 * count,
+                session,
             });
-            const refId = await generateRefId(ReferenceIdPrefix.GACHA);
+            // const refId = await generateRefId(ReferenceIdPrefix.GACHA);
             // 3. insert transaction history
-            const transaction = await transactionCreate({
-                wallet: walletUser?._id,
-                amount: 10,
-                description: Description.GACHA,
-                referenceType: ReferenceType.GACHA,
-                referenceId: refId,
-                type: 'OUT',
-            });
+            await transactionModels.insertMany(transaction, { session });
             // 4. update inventory
-            const inventory = await insertInventory({
-                item: random._id,
+            await bulkWriteInventory({
+                data: group,
                 user: userId,
+                session: session,
             });
+
             // 5. insert gacha log/history
-            await historyCreate({
-                user: userId,
-                item: random._id,
-                wallet: walletUser.id,
-                transaction: transaction._id,
-                inventory: inventory._id,
-                cost: 10,
-            });
+            await historyModels.insertMany(history, { session });
         });
-        if (random) {
+        if (data) {
             res.json({
                 message: 'get random gacha success',
-                data: random,
+                data: data,
             });
         }
     } catch (error) {
