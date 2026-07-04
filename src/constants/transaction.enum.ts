@@ -1,3 +1,12 @@
+export enum ReferenceIdPrefix {
+    REGISTER = 'REG',
+    GACHA = 'GAC',
+    ADMIN_ADJUSTMENT = 'ADJ',
+    DAILY_REWARD = 'DRW',
+    EVENT_REWARD = 'ERW',
+    REFUND = 'RFD',
+}
+
 export enum ReferenceType {
     REGISTER = 'REGISTER',
     GACHA = 'GACHA',

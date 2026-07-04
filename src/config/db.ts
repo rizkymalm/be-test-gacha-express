@@ -8,7 +8,6 @@ const connectDB = async () => {
             bufferCommands: false,
         });
     } catch (error: any) {
-        console.log(error);
         if (error) {
             process.exit(1);
         }

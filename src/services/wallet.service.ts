@@ -2,12 +2,21 @@ import type { Types } from 'mongoose';
 import walletModels from '../models/wallet.model.ts';
 
 interface PropWallet {
-    user: Types.ObjectId;
+    user: Types.ObjectId | string | string[];
     balance: number;
 }
 
-export async function walletGet({ user }: { user: Types.ObjectId }) {
-    const wallet = walletModels.findOne({ user });
+interface PropWalletUpdate {
+    id: Types.ObjectId | string | string[];
+    balance: number;
+}
+
+export async function walletGet({
+    user,
+}: {
+    user: Types.ObjectId | string | string[];
+}) {
+    const wallet = walletModels.findOne({ user }).select('user balance');
     return wallet.exec();
 }
 
@@ -20,11 +29,11 @@ export async function walletCreate({ user, balance }: PropWallet) {
     return await newWallet.save();
 }
 
-export async function walletUpdate({ user, balance }: PropWallet) {
-    const newWallet = await walletModels
+export async function walletUpdateBalance({ id, balance }: PropWalletUpdate) {
+    const update = await walletModels
         .updateOne(
             {
-                _id: user,
+                _id: id,
             },
             {
                 $set: {
@@ -34,5 +43,5 @@ export async function walletUpdate({ user, balance }: PropWallet) {
         )
         .exec();
 
-    return newWallet;
+    return update;
 }

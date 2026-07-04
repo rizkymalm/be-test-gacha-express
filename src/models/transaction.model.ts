@@ -22,7 +22,7 @@ const transactionSchema = new mongoose.Schema(
             enum: ReferenceType
         },
         referenceId: {
-            type: Number,
+            type: String,
             required: true
         },
         description: {

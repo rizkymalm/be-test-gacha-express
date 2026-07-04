@@ -4,6 +4,6 @@ import { getRandomGacha } from '../controllers/gacha.controller.ts';
 
 const gachaRouter = express.Router();
 
-gachaRouter.get('/amount', authenticateToken, getRandomGacha);
+gachaRouter.get('/random', authenticateToken, getRandomGacha);
 
 export default gachaRouter;
