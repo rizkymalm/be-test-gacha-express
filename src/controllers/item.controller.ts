@@ -10,20 +10,28 @@ import {
     sumItemDropRate,
 } from '../services/item.service.js';
 import { isAdmin } from '../utils/isAdmin.js';
+import { checkEventActive } from '../services/event.service.ts';
 
 export async function getItem(req: Request, res: Response) {
     try {
         const page = req.query.page;
         const limit = req.query.limit;
-
-        const item = await itemGet({
-            page,
-            limit,
-        });
-        res.json({
-            message: 'get Item success',
-            data: item,
-        });
+        const checkEvent = await checkEventActive();
+        if (checkEvent) {
+            const item = await itemGet({
+                page,
+                limit,
+                event: checkEvent._id,
+            });
+            res.json({
+                message: 'get Item success',
+                data: item,
+            });
+        } else {
+            res.json({
+                message: 'No Active event',
+            });
+        }
     } catch (error) {
         res.status(404).json({
             message: error,
@@ -33,11 +41,23 @@ export async function getItem(req: Request, res: Response) {
 
 export async function getItemGroup(req: Request, res: Response) {
     try {
-        const item = await itemGroup();
-        res.json({
-            message: 'get Item success',
-            data: item,
-        });
+        const checkEvent = await checkEventActive();
+        if (checkEvent) {
+            const item = await itemGroup(checkEvent._id);
+            res.json({
+                message: 'get Item success',
+                data: item,
+            });
+
+            res.json({
+                message: 'get Item success',
+                data: item,
+            });
+        } else {
+            res.json({
+                message: 'No Active event',
+            });
+        }
     } catch (error) {
         res.status(404).json({
             message: error,

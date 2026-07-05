@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 const itemSchema = new mongoose.Schema(
     {
@@ -19,6 +19,10 @@ const itemSchema = new mongoose.Schema(
         dropRate: {
             type: Number,
             required: true,
+        },
+        event: {
+            type: [Types.ObjectId],
+            required: false,
         },
         isDelete: {
             type: Boolean,

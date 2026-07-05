@@ -6,17 +6,14 @@ import type {
     PropsItemUpdate,
 } from '../types/item.type.js';
 import type { PropId } from '../types.js';
+import type { PropQueryList } from '../types/types.js';
 
-interface PropItemGet {
-    limit: any;
-    page: any;
-}
-
-export async function itemGet({ limit, page }: PropItemGet) {
+export async function itemGet({ limit, page, event }: PropQueryList) {
     const wallet = itemModels.aggregate([
         {
             $match: {
                 isDelete: { $ne: true },
+                event: { $in: [event] },
             },
         },
         {
@@ -32,6 +29,28 @@ export async function itemGet({ limit, page }: PropItemGet) {
     return wallet.exec();
 }
 
+export async function itemExcludeGet({ limit, page, items }: PropQueryList) {
+    console.log(limit, page)
+    const result = itemModels.aggregate([
+        {
+            $match: {
+                isDelete: { $ne: true },
+                _id: { $nin: items },
+            },
+        },
+        {
+            $unset: ['createdAt', 'updatedAt'],
+        },
+        {
+            $limit: parseInt(limit),
+        },
+        {
+            $skip: (parseInt(page) - 1) * parseInt(limit),
+        },
+    ]);
+    return result.exec();
+}
+
 export async function itemDetail({ id }: PropId) {
     const wallet = itemModels.findOne({ _id: id, isDelete: { $ne: true } });
     return wallet.exec();
@@ -42,11 +61,12 @@ export async function itemCheckExist({ id }: PropId) {
     return item.exec();
 }
 
-export async function itemGroup() {
+export async function itemGroup(event: string | Types.ObjectId) {
     const wallet = itemModels.aggregate([
         {
             $match: {
                 isDelete: { $ne: true },
+                event: { $in: [event] },
             },
         },
         {

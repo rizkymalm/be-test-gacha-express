@@ -11,6 +11,7 @@ import walletRouter from './router/wallet.router.js';
 import gachaRouter from './router/gacha.router.js';
 import itemRouter from './router/item.router.js';
 import roleRouter from './router/role.router.js';
+import eventRouter from './router/event.router.ts';
 
 const app = express();
 const port = process.env.PORT;
@@ -29,6 +30,7 @@ app.use('/user', userRouter);
 app.use('/wallet', walletRouter);
 app.use('/gacha', gachaRouter);
 app.use('/item', itemRouter)
+app.use('/event', eventRouter);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
