@@ -1,10 +1,10 @@
 import type { Types } from 'mongoose';
-import itemModels from '../models/item.models.ts';
+import itemModels from '../models/item.models.js';
 import type {
     PropsItemCreate,
     PropsItemEditDropRate,
     PropsItemUpdate,
-} from '../types/item.type.ts';
+} from '../types/item.type.js';
 import type { PropId } from '../types.js';
 
 interface PropItemGet {

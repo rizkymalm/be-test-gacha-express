@@ -1,16 +1,16 @@
 import express from 'express';
 import 'dotenv/config';
-import connectDB from './config/db.ts';
+import connectDB from './config/db.js';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import router from './router/index.ts';
-import authRouter from './router/auth.router.ts';
-import userRouter from './router/user.router.ts';
+import router from './router/index.js';
+import authRouter from './router/auth.router.js';
+import userRouter from './router/user.router.js';
 import cookieParser from 'cookie-parser';
-import walletRouter from './router/wallet.router.ts';
-import gachaRouter from './router/gacha.router.ts';
-import itemRouter from './router/item.router.ts';
-import roleRouter from './router/role.router.ts';
+import walletRouter from './router/wallet.router.js';
+import gachaRouter from './router/gacha.router.js';
+import itemRouter from './router/item.router.js';
+import roleRouter from './router/role.router.js';
 
 const app = express();
 const port = process.env.PORT;

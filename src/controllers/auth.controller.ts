@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import 'dotenv/config';
 import type { Request, Response } from 'express';
-import { authLogin, authRegister } from '../services/auth.service.ts';
+import { authLogin, authRegister } from '../services/auth.service.js';
 
 import jwt, { type VerifyErrors } from 'jsonwebtoken';
 
@@ -9,10 +9,10 @@ import type { UserPayload } from '../types.js';
 import {
     generateAccessToken,
     generateRefreshToken,
-} from '../utils/generateAccessToken.ts';
-import { walletCreate } from '../services/wallet.service.ts';
-import { transactionCreate } from '../services/transaction.service.ts';
-import { Description, ReferenceType } from '../constants/transaction.enum.ts';
+} from '../utils/generateAccessToken.js';
+import { walletCreate } from '../services/wallet.service.js';
+import { transactionCreate } from '../services/transaction.service.js';
+import { Description, ReferenceType } from '../constants/transaction.enum.js';
 
 export async function authGet(req: Request, res: Response) {
     try {

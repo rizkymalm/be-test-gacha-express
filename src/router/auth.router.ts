@@ -4,8 +4,8 @@ import {
     postRefreshToken,
     postLogin,
     postRegister,
-} from '../controllers/auth.controller.ts';
-import { loginRules, registerRules } from '../lib/userValidationRules.ts';
+} from '../controllers/auth.controller.js';
+import { loginRules, registerRules } from '../lib/userValidationRules.js';
 
 const authRouter = express.Router();
 

@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose';
-import roleModels from '../models/role.models.ts';
+import roleModels from '../models/role.models.js';
 
 interface PropRoleDetail {
     role: Types.ObjectId | string | string[];

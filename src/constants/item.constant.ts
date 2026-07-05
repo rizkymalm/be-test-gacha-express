@@ -1,4 +1,4 @@
-import type { PropsTierRange } from "../types/item.type.ts";
+import type { PropsTierRange } from "../types/item.type.js";
 
 export const dropRateMax: PropsTierRange[] = [
     {

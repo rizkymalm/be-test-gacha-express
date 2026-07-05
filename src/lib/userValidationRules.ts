@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { validate } from '../middleware/validate.ts';
+import { validate } from '../middleware/validate.js';
 
 export const loginRules = [
     body('password').trim().notEmpty().withMessage('Password is required'),

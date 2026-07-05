@@ -1,5 +1,5 @@
 import type { ClientSession, Types } from 'mongoose';
-import walletModels from '../models/wallet.model.ts';
+import walletModels from '../models/wallet.model.js';
 
 interface PropWallet {
     user: Types.ObjectId | string | string[];

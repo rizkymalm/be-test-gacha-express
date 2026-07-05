@@ -1,6 +1,6 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/authenticateToken .ts';
-import { getRoleDetail, getRoleList, getRoleLogin } from '../controllers/role.controller.ts';
+import { authenticateToken } from '../middleware/authenticateToken .js';
+import { getRoleDetail, getRoleList, getRoleLogin } from '../controllers/role.controller.js';
 
 const roleRouter = express.Router();
 

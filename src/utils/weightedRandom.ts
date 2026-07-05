@@ -1,4 +1,4 @@
-import { itemGet } from '../services/item.service.ts';
+import { itemGet } from '../services/item.service.js';
 
 export async function weightedRandom() {
     const items = await itemGet({ limit: 100, page: 1 });

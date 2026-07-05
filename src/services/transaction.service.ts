@@ -1,6 +1,6 @@
 import type { Types } from 'mongoose';
-import transactionModels from '../models/transaction.model.ts';
-import { ReferenceType } from '../constants/transaction.enum.ts';
+import transactionModels from '../models/transaction.model.js';
+import { ReferenceType } from '../constants/transaction.enum.js';
 
 type Reference = keyof typeof ReferenceType;
 

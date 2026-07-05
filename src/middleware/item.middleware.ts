@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
-import { dropRateRange } from '../utils/dropRateRange.ts';
-import { dropRateMax } from '../constants/item.constant.ts';
-import type { PropsTierRange } from '../types/item.type.ts';
+import { dropRateRange } from '../utils/dropRateRange.js';
+import { dropRateMax } from '../constants/item.constant.js';
+import type { PropsTierRange } from '../types/item.type.js';
 
 export const validateDropRate = (
     req: Request,

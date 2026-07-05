@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { userProfile } from '../services/user.service.ts';
+import { userProfile } from '../services/user.service.js';
 
 export async function getProfile(req: Request, res: Response) {
     try {

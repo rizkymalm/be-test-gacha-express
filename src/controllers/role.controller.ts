@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { roleDetail, roleList } from '../services/role.service.ts';
-import { isAdmin } from '../utils/isAdmin.ts';
+import { roleDetail, roleList } from '../services/role.service.js';
+import { isAdmin } from '../utils/isAdmin.js';
 
 export async function getRoleList(req: Request, res: Response) {
     try {

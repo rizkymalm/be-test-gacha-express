@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose';
-import type { Tier } from '../types/item.type.ts';
+import type { Tier } from '../types/item.type.js';
 
 interface Props {
     _id: Types.ObjectId | String | String[];

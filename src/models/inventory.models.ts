@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { ReferenceType } from '../constants/transaction.enum.ts';
 
 const inventorySchema = new mongoose.Schema(
     {

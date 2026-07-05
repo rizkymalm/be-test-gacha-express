@@ -1,4 +1,4 @@
-import authModels from '../models/auth.model.ts';
+import authModels from '../models/auth.model.js';
 
 interface PropsAuth {
     username: string;

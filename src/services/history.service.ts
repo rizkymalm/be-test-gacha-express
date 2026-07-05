@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose';
-import historyModels from '../models/history.models.ts';
+import historyModels from '../models/history.models.js';
 
 interface Props {
     user: Types.ObjectId | string | string[];

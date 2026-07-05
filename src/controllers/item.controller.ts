@@ -8,8 +8,8 @@ import {
     itemSoftDelete,
     itemUpdate,
     sumItemDropRate,
-} from '../services/item.service.ts';
-import { isAdmin } from '../utils/isAdmin.ts';
+} from '../services/item.service.js';
+import { isAdmin } from '../utils/isAdmin.js';
 
 export async function getItem(req: Request, res: Response) {
     try {

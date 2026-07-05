@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/authenticateToken .ts';
+import { authenticateToken } from '../middleware/authenticateToken .js';
 import {
     deleteItem,
     getItem,
@@ -7,9 +7,9 @@ import {
     patchEditDropRate,
     postCreateItem,
     putUpdateItem,
-} from '../controllers/item.controller.ts';
-import { validateDropRate } from '../middleware/item.middleware.ts';
-import { createItemRules, editDropRateRules } from '../lib/itemValidationRules.ts';
+} from '../controllers/item.controller.js';
+import { validateDropRate } from '../middleware/item.middleware.js';
+import { createItemRules, editDropRateRules } from '../lib/itemValidationRules.js';
 
 const itemRouter = express.Router();
 

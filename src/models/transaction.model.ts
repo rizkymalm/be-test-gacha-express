@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { ReferenceType } from '../constants/transaction.enum.ts';
+import { ReferenceType } from '../constants/transaction.enum.js';
 
 const transactionSchema = new mongoose.Schema(
     {

@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose';
-import inventoryModel from '../models/inventory.models.ts';
+import inventoryModel from '../models/inventory.models.js';
 
 interface Props {
     user: Types.ObjectId | string | string[];

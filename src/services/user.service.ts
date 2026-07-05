@@ -1,4 +1,4 @@
-import authModels from '../models/auth.model.ts';
+import authModels from '../models/auth.model.js';
 
 export async function userProfile({ id }: any) {
     const user = authModels

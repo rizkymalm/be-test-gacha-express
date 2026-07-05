@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { walletGet } from '../services/wallet.service.ts';
+import { walletGet } from '../services/wallet.service.js';
 
 export async function getWallet(req: Request, res: Response) {
     try {

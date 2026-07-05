@@ -1,5 +1,5 @@
-import { dropRateMax, type TierType } from '../constants/item.constant.ts';
-import type { PropsTierRange } from '../types/item.type.ts';
+import { dropRateMax, type TierType } from '../constants/item.constant.js';
+import type { PropsTierRange } from '../types/item.type.js';
 
 interface Props {
     tier: TierType;

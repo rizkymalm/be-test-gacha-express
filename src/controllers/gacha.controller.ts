@@ -1,17 +1,17 @@
 import type { Request, Response } from 'express';
-import { weightedRandom } from '../utils/weightedRandom.ts';
+import { weightedRandom } from '../utils/weightedRandom.js';
 import mongoose, { Types } from 'mongoose';
-import { walletGet, walletUpdateBalance } from '../services/wallet.service.ts';
+import { walletGet, walletUpdateBalance } from '../services/wallet.service.js';
 import {
     Description,
     ReferenceIdPrefix,
     ReferenceType,
-} from '../constants/transaction.enum.ts';
-import { generateRefId } from '../utils/generateRefId.ts';
-import { bulkWriteInventory } from '../services/inventory.service.ts';
-import { groupItemGacha } from '../utils/groupItemGacha.ts';
-import transactionModels from '../models/transaction.model.ts';
-import historyModels from '../models/history.models.ts';
+} from '../constants/transaction.enum.js';
+import { generateRefId } from '../utils/generateRefId.js';
+import { bulkWriteInventory } from '../services/inventory.service.js';
+import { groupItemGacha } from '../utils/groupItemGacha.js';
+import transactionModels from '../models/transaction.model.js';
+import historyModels from '../models/history.models.js';
 
 interface PropsShowItem {
     _id: Types.ObjectId | string | string[];
