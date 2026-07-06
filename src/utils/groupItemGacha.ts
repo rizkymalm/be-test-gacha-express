@@ -5,7 +5,6 @@ interface Props {
     _id: Types.ObjectId | String | String[];
     name: string;
     tier: Tier;
-    dropRate: number;
     quantity: number;
 }
 export async function groupItemGacha(data: any[]) {
@@ -19,7 +18,6 @@ export async function groupItemGacha(data: any[]) {
                 _id: data[i]._id,
                 name: data[i].name,
                 tier: data[i].tier,
-                dropRate: data[i].dropRate,
                 quantity: 1,
             });
         } else {

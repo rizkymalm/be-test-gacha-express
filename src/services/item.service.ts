@@ -12,8 +12,8 @@ export async function itemGet({ limit, page }: PropQueryList) {
     const data = itemModels.aggregate([
         {
             $sort: {
-                createdAt: -1
-            }
+                createdAt: -1,
+            },
         },
         {
             $match: {
@@ -64,9 +64,7 @@ export async function itemCheckExist({ id }: PropId) {
     return data.exec();
 }
 
-export async function itemGroup(
-    items: string[]
-) {
+export async function itemGroup(items: string[]) {
     const wallet = itemModels.aggregate([
         {
             $match: {
@@ -80,38 +78,38 @@ export async function itemGroup(
                 docs: { $push: '$$ROOT' },
             },
         },
-        {
-            $project: {
-                docs: {
-                    $slice: [
-                        '$docs',
-                        {
-                            $switch: {
-                                branches: [
-                                    {
-                                        case: { $eq: ['$_id', 'SILVER'] },
-                                        then: 2,
-                                    },
-                                    {
-                                        case: { $eq: ['$_id', 'DIAMOND'] },
-                                        then: 2,
-                                    },
-                                    {
-                                        case: { $eq: ['$_id', 'LEGENDARY'] },
-                                        then: 1,
-                                    },
-                                    {
-                                        case: { $eq: ['$_id', 'GOLD'] },
-                                        then: 2,
-                                    },
-                                ],
-                                default: 0,
-                            },
-                        },
-                    ],
-                },
-            },
-        },
+        // {
+        //     $project: {
+        //         docs: {
+        //             $slice: [
+        //                 '$docs',
+        //                 {
+        //                     $switch: {
+        //                         branches: [
+        //                             {
+        //                                 case: { $eq: ['$_id', 'SILVER'] },
+        //                                 then: 2,
+        //                             },
+        //                             {
+        //                                 case: { $eq: ['$_id', 'DIAMOND'] },
+        //                                 then: 2,
+        //                             },
+        //                             {
+        //                                 case: { $eq: ['$_id', 'LEGENDARY'] },
+        //                                 then: 1,
+        //                             },
+        //                             {
+        //                                 case: { $eq: ['$_id', 'GOLD'] },
+        //                                 then: 2,
+        //                             },
+        //                         ],
+        //                         default: 0,
+        //                     },
+        //                 },
+        //             ],
+        //         },
+        //     },
+        // },
         {
             $unwind: '$docs',
         },
@@ -125,16 +123,16 @@ export async function itemGroup(
                 sortOrder: {
                     $indexOfArray: [
                         ['LEGENDARY', 'DIAMOND', 'GOLD', 'SILVER'],
-                        '$tier', // Matches the tier field inside the newly restored root document
+                        '$tier', 
                     ],
                 },
             },
         },
         {
-            $sort: { sortOrder: 1 }, // Sorts 0, 1, 2, 3
+            $sort: { sortOrder: 1 },
         },
         {
-            $project: { sortOrder: 0 }, // Cleans up the helper field from final output
+            $project: { sortOrder: 0 },
         },
     ]);
     return wallet.exec();
