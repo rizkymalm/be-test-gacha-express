@@ -24,13 +24,18 @@ export async function itemGet({ limit, page }: PropQueryList) {
             $unset: ['createdAt', 'updatedAt'],
         },
         {
-            $limit: parseInt(limit),
+            $skip: (parseInt(page) - 1) * parseInt(limit),
         },
         {
-            $skip: (parseInt(page) - 1) * parseInt(limit),
+            $limit: parseInt(limit),
         },
     ]);
     return data.exec();
+}
+
+export async function itemCount() {
+    const data = itemModels.countDocuments({ isDelete: { $ne: true } });
+    return data;
 }
 
 export async function itemExcludeGet({ limit, page, items }: PropQueryList) {
@@ -45,10 +50,10 @@ export async function itemExcludeGet({ limit, page, items }: PropQueryList) {
             $unset: ['createdAt', 'updatedAt'],
         },
         {
-            $limit: parseInt(limit),
+            $skip: (parseInt(page) - 1) * parseInt(limit),
         },
         {
-            $skip: (parseInt(page) - 1) * parseInt(limit),
+            $limit: parseInt(limit),
         },
     ]);
     return data.exec();
@@ -123,7 +128,7 @@ export async function itemGroup(items: string[]) {
                 sortOrder: {
                     $indexOfArray: [
                         ['LEGENDARY', 'DIAMOND', 'GOLD', 'SILVER'],
-                        '$tier', 
+                        '$tier',
                     ],
                 },
             },

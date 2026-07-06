@@ -2,19 +2,14 @@ import type { Request, Response } from 'express';
 import {
     checkEventActive,
     detailEvent,
+    eventCount,
     eventCreate,
     eventList,
 } from '../services/event.service.js';
 import { isAdmin } from '../utils/isAdmin.js';
 import eventModels from '../models/event.model.js';
-import {
-    itemDetail,
-    itemExcludeGet,
-    itemGet,
-} from '../services/item.service.js';
-import itemModels from '../models/item.models.js';
-import mongoose from 'mongoose';
-import { eventItemList } from '../services/eventItem.service.ts';
+import { itemExcludeGet } from '../services/item.service.js';
+import { eventItemList } from '../services/eventItem.service.js';
 
 export async function getListEvent(req: Request, res: Response) {
     try {
@@ -32,9 +27,11 @@ export async function getListEvent(req: Request, res: Response) {
                     : undefined,
             search: search === 'undefined' ? undefined : search,
         });
+        const totalData = await eventCount();
         res.json({
             message: 'get event success',
             data: item,
+            totalData,
         });
     } catch (error) {
         res.status(404).json({

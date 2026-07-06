@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose';
-import eventModels from '../models/event.model.ts';
+import eventModels from '../models/event.model.js';
 import type { PropQueryList } from '../types/types.js';
 import mongoose from 'mongoose';
 
@@ -30,10 +30,15 @@ export async function eventList({
             $skip: (parseInt(page) - 1) * parseInt(limit),
         },
         {
-            $sort: { createdAt: -1 },
+            $limit: parseInt(limit),
         },
     ]);
     return data.exec();
+}
+
+export async function eventCount(){
+    const data = eventModels.countDocuments();
+    return data;
 }
 
 export async function checkEventActive() {

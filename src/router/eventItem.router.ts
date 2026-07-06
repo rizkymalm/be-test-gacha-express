@@ -9,8 +9,8 @@ import {
 import {
     validateDropRateEventItem,
     validateDropRateEventItemUpdate,
-} from '../middleware/eventItem.middleware.ts';
-import { validateAdminRole } from '../middleware/role.middleware.ts';
+} from '../middleware/eventItem.middleware.js';
+import { validateAdminRole } from '../middleware/role.middleware.js';
 
 const eventItemRouter = express.Router();
 

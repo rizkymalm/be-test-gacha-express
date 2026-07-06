@@ -12,8 +12,7 @@ import { bulkWriteInventory } from '../services/inventory.service.js';
 import { groupItemGacha } from '../utils/groupItemGacha.js';
 import transactionModels from '../models/transaction.model.js';
 import historyModels from '../models/history.models.js';
-import { checkEventActive } from '../services/event.service.ts';
-import { itemDetail } from '../services/item.service.ts';
+import { itemDetail } from '../services/item.service.js';
 
 interface PropsShowItem {
     _id: Types.ObjectId | string | string[];

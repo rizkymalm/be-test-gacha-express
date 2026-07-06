@@ -10,7 +10,7 @@ import {
     putEditEvent,
 } from '../controllers/event.controller.js';
 import { createEventRules } from '../lib/eventValidationRules.js';
-import { validateAdminRole } from '../middleware/role.middleware.ts';
+import { validateAdminRole } from '../middleware/role.middleware.js';
 
 const eventRouter = express.Router();
 //public

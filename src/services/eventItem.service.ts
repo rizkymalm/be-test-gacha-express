@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose';
-import eventItemModels from '../models/eventItem.models.ts';
+import eventItemModels from '../models/eventItem.models.js';
 import mongoose from 'mongoose';
 
 interface Props {

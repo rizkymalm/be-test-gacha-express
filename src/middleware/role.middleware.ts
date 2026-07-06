@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { isAdmin } from "../utils/isAdmin.ts";
+import { isAdmin } from "../utils/isAdmin.js";
 
 export const validateAdminRole = async (req: Request, res: Response, next: NextFunction) => {
     const roleId = req.user?.role

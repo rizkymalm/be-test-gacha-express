@@ -5,11 +5,11 @@ import {
     eventItemSelectedById,
     sumEventItemDropRate,
     sumEventItemDropRateExclude,
-} from '../services/eventItem.service.ts';
-import eventItemModels from '../models/eventItem.models.ts';
+} from '../services/eventItem.service.js';
+import eventItemModels from '../models/eventItem.models.js';
 import mongoose from 'mongoose';
-import { itemDetail } from '../services/item.service.ts';
-import { detailEvent } from '../services/event.service.ts';
+import { itemDetail } from '../services/item.service.js';
+import { detailEvent } from '../services/event.service.js';
 
 export async function getEventItem(req: Request, res: Response) {
     try {

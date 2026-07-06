@@ -10,7 +10,7 @@ import {
 import {
     createItemRules,
 } from '../lib/itemValidationRules.js';
-import { validateAdminRole } from '../middleware/role.middleware.ts';
+import { validateAdminRole } from '../middleware/role.middleware.js';
 
 const itemRouter = express.Router();
 itemRouter.get('/group', authenticateToken, getItemGroup);

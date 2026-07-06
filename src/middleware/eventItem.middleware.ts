@@ -2,9 +2,8 @@ import type { NextFunction, Request, Response } from 'express';
 import { dropRateRange } from '../utils/dropRateRange.js';
 import { dropRateMax, TierType } from '../constants/item.constant.js';
 import type { PropsTierRange } from '../types/item.type.js';
-import itemModels from '../models/item.models.ts';
-import { eventItemSelectedById } from '../services/eventItem.service.ts';
-import eventItemModels from '../models/eventItem.models.ts';
+import itemModels from '../models/item.models.js';
+import eventItemModels from '../models/eventItem.models.js';
 
 export const validateDropRateEventItem = async (
     req: Request,

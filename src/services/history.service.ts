@@ -1,5 +1,6 @@
 import type { Types } from 'mongoose';
 import historyModels from '../models/history.models.js';
+import type { PropQueryList } from '../types/types.js';
 
 interface Props {
     user: Types.ObjectId | string | string[];
@@ -28,4 +29,26 @@ export async function historyCreate({
     });
 
     return await save.save();
+}
+
+export async function historyList({ limit, page }: PropQueryList) {
+    const data = historyModels.aggregate([
+        {
+            $sort: {
+                createdAt: -1,
+            },
+        },
+        {
+            $skip: (parseInt(page) - 1) * parseInt(limit),
+        },
+        {
+            $limit: parseInt(limit),
+        },
+    ]);
+    return data.exec();
+}
+
+export async function historyCount(){
+    const data = historyModels.countDocuments();
+    return data;
 }

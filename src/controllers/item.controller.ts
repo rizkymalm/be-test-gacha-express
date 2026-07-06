@@ -1,13 +1,14 @@
 import type { Request, Response } from 'express';
 import {
+    itemCount,
     itemDetail,
     itemGet,
     itemGroup,
     itemSoftDelete,
 } from '../services/item.service.js';
-import { checkEventActive } from '../services/event.service.ts';
-import itemModels from '../models/item.models.ts';
-import { eventItemList } from '../services/eventItem.service.ts';
+import { checkEventActive } from '../services/event.service.js';
+import itemModels from '../models/item.models.js';
+import { eventItemList } from '../services/eventItem.service.js';
 
 export async function getItemList(req: Request, res: Response) {
     try {
@@ -17,9 +18,11 @@ export async function getItemList(req: Request, res: Response) {
             page,
             limit,
         });
+        const totalData = await itemCount();
         res.json({
             message: 'get Item success',
             data: item,
+            totalData,
         });
     } catch (error) {
         res.status(400).json({

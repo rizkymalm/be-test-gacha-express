@@ -1,6 +1,5 @@
-import { checkEventActive } from '../services/event.service.ts';
-import { eventItemList } from '../services/eventItem.service.ts';
-import { itemGet } from '../services/item.service.js';
+import { checkEventActive } from '../services/event.service.js';
+import { eventItemList } from '../services/eventItem.service.js';
 
 export async function weightedRandom() {
     const checkEvent = await checkEventActive();
