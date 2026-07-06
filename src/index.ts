@@ -1,41 +1,14 @@
-import express from 'express';
+import { app } from './app.js';
 import 'dotenv/config';
-import connectDB from './config/db.js';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import router from './router/index.js';
-import authRouter from './router/auth.router.js';
-import userRouter from './router/user.router.js';
-import cookieParser from 'cookie-parser';
-import walletRouter from './router/wallet.router.js';
-import gachaRouter from './router/gacha.router.js';
-import itemRouter from './router/item.router.js';
-import roleRouter from './router/role.router.js';
-import eventRouter from './router/event.router.js';
-import eventItemRouter from './router/eventItem.router.js';
-import historyRouter from './router/history.router.js';
 
-const app = express();
 const port = process.env.PORT;
 
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }));
-connectDB();
+// app.listen(port, () => {
+//     console.log(`Server is running at http://localhost:${port}`);
+// });
 
-app.use('', router);
-app.use('/auth', authRouter);
-app.use('/role', roleRouter);
-app.use('/user', userRouter);
-app.use('/wallet', walletRouter);
-app.use('/gacha', gachaRouter);
-app.use('/item', itemRouter);
-app.use('/event', eventRouter);
-app.use('/event-item', eventItemRouter);
-app.use('/history', historyRouter);
-
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+app.listen(port).on("listening", () => {
+	console.log(`Server is running at http://localhost:${port}`);
 });
+
+module.exports = app;
