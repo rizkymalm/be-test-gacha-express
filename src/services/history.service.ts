@@ -39,6 +39,43 @@ export async function historyList({ limit, page }: PropQueryList) {
             },
         },
         {
+            $lookup: {
+                from: 'auths',
+                localField: 'user',
+                foreignField: '_id',
+                as: 'user',
+                pipeline: [
+                    {
+                        $project: {
+                            _id: 1,
+                            firstName: 1,
+                            lastName: 1,
+                            email: 1,
+                            username: 1,
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            $lookup: {
+                from: 'items',
+                localField: 'item',
+                foreignField: '_id',
+                as: 'items',
+                pipeline: [
+                    {
+                        $project: {
+                            _id: 1,
+                            name: 1,
+                            tier: 1,
+                            image: 1
+                        },
+                    },
+                ],
+            },
+        },
+        {
             $skip: (parseInt(page) - 1) * parseInt(limit),
         },
         {
@@ -48,7 +85,7 @@ export async function historyList({ limit, page }: PropQueryList) {
     return data.exec();
 }
 
-export async function historyCount(){
+export async function historyCount() {
     const data = historyModels.countDocuments();
     return data;
 }

@@ -34,7 +34,7 @@ export async function getListEvent(req: Request, res: Response) {
             totalData,
         });
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -43,12 +43,21 @@ export async function getListEvent(req: Request, res: Response) {
 export async function getActiveEvent(req: Request, res: Response) {
     try {
         const data = await checkEventActive();
-        res.json({
-            message: 'get event success',
-            data,
-        });
+        if (data) {
+            res.json({
+                message: 'get event success',
+                data,
+            });
+        } else {
+            res.status(404).json({
+                message: 'NOT FOUND!',
+                errors: {
+                    message: 'No active event',
+                },
+            });
+        }
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -75,7 +84,7 @@ export async function getDetailEvent(req: Request, res: Response) {
             });
         }
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -101,7 +110,7 @@ export async function getEventItemExclude(req: Request, res: Response) {
             data: result,
         });
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -130,7 +139,7 @@ export async function postCreateEvent(req: Request, res: Response) {
             data: data,
         });
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -165,7 +174,7 @@ export async function patchUpdateStatusEvent(req: Request, res: Response) {
             data: id,
         });
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -205,7 +214,7 @@ export async function putEditEvent(req: Request, res: Response) {
             },
         });
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
