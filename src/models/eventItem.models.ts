@@ -11,7 +11,8 @@ const eventItemSchema = new mongoose.Schema(
             required: true,
         },
         dropRate: {
-            type: String,
+            type: Number,
+            required: true
         },
     },
     {

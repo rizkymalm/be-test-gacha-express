@@ -5,31 +5,45 @@ import {
     getDetailEvent,
     getEventItemExclude,
     getListEvent,
-    patchUpdateItemEvent,
     patchUpdateStatusEvent,
     postCreateEvent,
     putEditEvent,
 } from '../controllers/event.controller.js';
 import { createEventRules } from '../lib/eventValidationRules.js';
+import { validateAdminRole } from '../middleware/role.middleware.ts';
 
 const eventRouter = express.Router();
-
-eventRouter.get('/list', authenticateToken, getListEvent);
+//public
 eventRouter.get('/active', authenticateToken, getActiveEvent);
-eventRouter.get('/detail/:id', authenticateToken, getDetailEvent);
-eventRouter.get('/item/exclude/:id', authenticateToken, getEventItemExclude);
+//admin
+eventRouter.get('/admin/detail/:id', authenticateToken, getDetailEvent);
+eventRouter.get('/admin/item/exclude/:id', authenticateToken, validateAdminRole, getEventItemExclude);
+eventRouter.get('/admin/list', authenticateToken, validateAdminRole, getListEvent);
 eventRouter.post(
-    '/create',
+    '/admin/create',
     authenticateToken,
+    validateAdminRole,
     createEventRules,
     postCreateEvent
 );
 eventRouter.patch(
-    '/update-status/:id',
+    '/admin/update-status/:id',
     authenticateToken,
+    validateAdminRole,
     patchUpdateStatusEvent
 );
-eventRouter.put('/edit/:id', authenticateToken, createEventRules, putEditEvent);
-eventRouter.patch('/update-item/:id', authenticateToken, patchUpdateItemEvent);
+eventRouter.put(
+    '/admin/edit/:id',
+    authenticateToken,
+    validateAdminRole,
+    createEventRules,
+    putEditEvent
+);
+// eventRouter.patch(
+//     '/admin/update-item/:id',
+//     authenticateToken,
+//     validateAdminRole,
+//     patchUpdateItemEvent
+// );
 
 export default eventRouter;

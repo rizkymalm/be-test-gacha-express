@@ -16,14 +16,6 @@ const itemSchema = new mongoose.Schema(
             required: true,
             enum: ['SILVER', 'GOLD', 'DIAMOND', 'LEGENDARY'],
         },
-        dropRate: {
-            type: Number,
-            required: true,
-        },
-        event: {
-            type: [Types.ObjectId],
-            required: false,
-        },
         isDelete: {
             type: Boolean,
             default: false,

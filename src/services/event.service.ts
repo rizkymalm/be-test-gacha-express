@@ -41,21 +41,57 @@ export async function checkEventActive() {
     return data.exec();
 }
 
-export async function detailEvent({
-    id,
-}: {
-    id: string | Types.ObjectId;
-}) {
+export async function detailEvent({ id }: { id: string | Types.ObjectId }) {
     const data = eventModels.aggregate([
         {
             $match: { _id: new mongoose.Types.ObjectId(id) },
         },
         {
             $lookup: {
-                from: 'items',
+                from: 'eventitems',
                 localField: '_id',
                 foreignField: 'event',
-                as: 'items',
+                as: 'eventItems',
+            },
+        },
+        {
+            $lookup: {
+                from: 'items',
+                localField: 'eventItems.item', // Mengambil array ID item dari hasil lookup sebelumnya
+                foreignField: '_id',
+                as: 'itemsDetails',
+            },
+        },
+        {
+            $project: {
+                event: 1,
+                description: 1,
+                status: 1,
+                items: {
+                    $map: {
+                        input: '$eventItems',
+                        as: 'ei',
+                        in: {
+                            dropRate: '$$ei.dropRate',
+                            _id: '$$ei._id',
+                            // Mencari detail item yang sesuai dengan ID di eventItems
+                            details: {
+                                $arrayElemAt: [
+                                    {
+                                        $filter: {
+                                            input: '$itemsDetails',
+                                            as: 'id',
+                                            cond: {
+                                                $eq: ['$$id._id', '$$ei.item'],
+                                            },
+                                        },
+                                    },
+                                    0,
+                                ],
+                            },
+                        },
+                    },
+                },
             },
         },
     ]);

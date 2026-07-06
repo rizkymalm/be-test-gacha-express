@@ -5,6 +5,5 @@ export interface PropQueryList {
     page: any;
     status?: 'ACTIVE' | 'INACTIVE' | undefined;
     search?: string | undefined;
-    event?: string | Types.ObjectId | string[];
     items?: Types.ObjectId[]
 }

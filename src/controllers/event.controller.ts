@@ -14,6 +14,7 @@ import {
 } from '../services/item.service.js';
 import itemModels from '../models/item.models.js';
 import mongoose from 'mongoose';
+import { eventItemList } from '../services/eventItem.service.ts';
 
 export async function getListEvent(req: Request, res: Response) {
     try {
@@ -88,33 +89,20 @@ export async function getEventItemExclude(req: Request, res: Response) {
         const id = req.params.id;
         const page = req.query.page;
         const limit = req.query.limit;
-        const roleId = req.user?.role;
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
-        const data = await detailEvent({ id: `${id}` || '' });
-        if (data.length > 0) {
-            const items = data[0].items;
-            const arrayItems = items.map((item: any) => {
-                return item._id;
-            });
-            const result = await itemExcludeGet({
-                page,
-                limit,
-                items: arrayItems,
-            });
-            console.log(result)
-            res.json({
-                message: 'get item event exclude success',
-                data: result,
-            });
-        }
+
+        const data = await eventItemList({ event: id || '' });
+        const arrayItems = data.map((item: any) => {
+            return item.item;
+        });
+        const result = await itemExcludeGet({
+            page,
+            limit,
+            items: arrayItems,
+        });
+        res.json({
+            message: 'get item event exclude success',
+            data: result,
+        });
     } catch (error) {
         res.status(404).json({
             message: error,
@@ -124,18 +112,7 @@ export async function getEventItemExclude(req: Request, res: Response) {
 
 export async function postCreateEvent(req: Request, res: Response) {
     try {
-        const roleId = req.user?.role;
         const { event, description, image, status } = req.body;
-
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
         if (status === 'ACTIVE') {
             const checkEvent = await checkEventActive();
             if (checkEvent) {
@@ -164,19 +141,8 @@ export async function postCreateEvent(req: Request, res: Response) {
 
 export async function patchUpdateStatusEvent(req: Request, res: Response) {
     try {
-        const roleId = req.user?.role;
         const id = req.params.id;
         const { status } = req.body;
-
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
         if (status === 'ACTIVE') {
             const checkEvent = await checkEventActive();
             if (checkEvent) {
@@ -210,19 +176,9 @@ export async function patchUpdateStatusEvent(req: Request, res: Response) {
 
 export async function putEditEvent(req: Request, res: Response) {
     try {
-        const roleId = req.user?.role;
         const id = req.params.id;
         const { event, description, image, status } = req.body;
 
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
         if (status === 'ACTIVE') {
             const checkEvent = await checkEventActive();
             if (checkEvent) {
@@ -258,41 +214,31 @@ export async function putEditEvent(req: Request, res: Response) {
     }
 }
 
-export async function patchUpdateItemEvent(req: Request, res: Response) {
-    try {
-        const roleId = req.user?.role;
-        const id = req.params.id;
-        const { items } = req.body;
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
+// export async function patchUpdateItemEvent(req: Request, res: Response) {
+//     try {
+//         const id = req.params.id;
+//         const { items } = req.body;
 
-        for (let i = 0; i < items.length; i++) {
-            const item = await itemDetail({ id: items[i] });
-            if (item) {
-                let eventItem: any = item?.event || [];
-                const eventId: string | string[] = id || '';
-                eventItem.push(eventId);
-                await itemModels.updateOne(
-                    { _id: item.id },
-                    { event: eventItem }
-                );
-            }
-        }
+//         for (let i = 0; i < items.length; i++) {
+//             const item = await itemDetail({ id: items[i] });
+//             if (item) {
+//                 let eventItem: any = item?.event || [];
+//                 const eventId: string | string[] = id || '';
+//                 eventItem.push(eventId);
+//                 await itemModels.updateOne(
+//                     { _id: item.id },
+//                     { event: eventItem }
+//                 );
+//             }
+//         }
 
-        res.json({
-            message: 'update item event success',
-            data: items,
-        });
-    } catch (error) {
-        res.status(404).json({
-            message: error,
-        });
-    }
-}
+//         res.json({
+//             message: 'update item event success',
+//             data: items,
+//         });
+//     } catch (error) {
+//         res.status(404).json({
+//             message: error,
+//         });
+//     }
+// }

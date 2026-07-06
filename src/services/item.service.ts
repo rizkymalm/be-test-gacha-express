@@ -8,12 +8,16 @@ import type {
 import type { PropId } from '../types.js';
 import type { PropQueryList } from '../types/types.js';
 
-export async function itemGet({ limit, page, event }: PropQueryList) {
-    const wallet = itemModels.aggregate([
+export async function itemGet({ limit, page }: PropQueryList) {
+    const data = itemModels.aggregate([
+        {
+            $sort: {
+                createdAt: -1
+            }
+        },
         {
             $match: {
                 isDelete: { $ne: true },
-                event: { $in: [event] },
             },
         },
         {
@@ -26,12 +30,11 @@ export async function itemGet({ limit, page, event }: PropQueryList) {
             $skip: (parseInt(page) - 1) * parseInt(limit),
         },
     ]);
-    return wallet.exec();
+    return data.exec();
 }
 
 export async function itemExcludeGet({ limit, page, items }: PropQueryList) {
-    console.log(limit, page)
-    const result = itemModels.aggregate([
+    const data = itemModels.aggregate([
         {
             $match: {
                 isDelete: { $ne: true },
@@ -48,25 +51,27 @@ export async function itemExcludeGet({ limit, page, items }: PropQueryList) {
             $skip: (parseInt(page) - 1) * parseInt(limit),
         },
     ]);
-    return result.exec();
+    return data.exec();
 }
 
 export async function itemDetail({ id }: PropId) {
-    const wallet = itemModels.findOne({ _id: id, isDelete: { $ne: true } });
-    return wallet.exec();
+    const data = itemModels.findOne({ _id: id, isDelete: { $ne: true } });
+    return data.exec();
 }
 
 export async function itemCheckExist({ id }: PropId) {
-    const item = itemModels.exists({ _id: id, isDelete: { $ne: true } });
-    return item.exec();
+    const data = itemModels.exists({ _id: id, isDelete: { $ne: true } });
+    return data.exec();
 }
 
-export async function itemGroup(event: string | Types.ObjectId) {
+export async function itemGroup(
+    items: string[]
+) {
     const wallet = itemModels.aggregate([
         {
             $match: {
                 isDelete: { $ne: true },
-                event: { $in: [event] },
+                _id: { $in: items },
             },
         },
         {
@@ -136,7 +141,7 @@ export async function itemGroup(event: string | Types.ObjectId) {
 }
 
 export async function sumItemDropRate() {
-    const item = itemModels.aggregate([
+    const data = itemModels.aggregate([
         {
             $match: {
                 isDelete: { $ne: true },
@@ -149,20 +154,14 @@ export async function sumItemDropRate() {
             },
         },
     ]);
-    return await item.exec();
+    return await data.exec();
 }
 
-export async function itemCreate({
-    name,
-    image,
-    tier,
-    dropRate,
-}: PropsItemCreate) {
+export async function itemCreate({ name, image, tier }: PropsItemCreate) {
     const save = new itemModels({
         name,
         image,
         tier,
-        dropRate,
     });
 
     return await save.save();

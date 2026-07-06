@@ -1,26 +1,39 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/authenticateToken .js';
-import { deleteItem, getItemGroup } from '../controllers/item.controller.js';
 import {
     deleteEventItem,
     getEventItem,
     patchUpdateDropRateEventItem,
-    postUpdateEventItem,
-} from '../controllers/eventItem.controller.ts';
+    postAddEventItem,
+} from '../controllers/eventItem.controller.js';
+import {
+    validateDropRateEventItem,
+    validateDropRateEventItemUpdate,
+} from '../middleware/eventItem.middleware.ts';
+import { validateAdminRole } from '../middleware/role.middleware.ts';
 
 const eventItemRouter = express.Router();
 
 eventItemRouter.get('/list/:event', authenticateToken, getEventItem);
 eventItemRouter.post(
-    '/admin/update/:event',
+    '/admin/add-item/:event',
+    validateDropRateEventItem,
     authenticateToken,
-    postUpdateEventItem
+    validateAdminRole,
+    postAddEventItem
 );
 eventItemRouter.patch(
     '/admin/update/drop-rate/:event',
+    validateDropRateEventItemUpdate,
     authenticateToken,
+    validateAdminRole,
     patchUpdateDropRateEventItem
 );
-eventItemRouter.delete('/admin/delete/:id', authenticateToken, deleteEventItem);
+eventItemRouter.delete(
+    '/admin/delete/:id',
+    authenticateToken,
+    validateAdminRole,
+    deleteEventItem
+);
 
 export default eventItemRouter;

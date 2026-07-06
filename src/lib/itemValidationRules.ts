@@ -10,11 +10,6 @@ export const createItemRules = [
         .withMessage('Tier is required')
         .isIn(['SILVER', 'GOLD', 'DIAMOND', 'LEGENDARY'])
         .withMessage('Tier must be one of: SILVER, GOLD, DIAMOND, LEGENDARY'),
-    body('dropRate')
-        .exists({ checkFalsy: true })
-        .withMessage('Drop Rate is required')
-        .isNumeric()
-        .withMessage('Drop Rate must be a number'),
 
     validate,
 ];

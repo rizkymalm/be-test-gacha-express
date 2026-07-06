@@ -1,39 +1,28 @@
 import type { Request, Response } from 'express';
 import {
-    itemCreate,
     itemDetail,
-    itemEditDropRate,
     itemGet,
     itemGroup,
     itemSoftDelete,
-    itemUpdate,
-    sumItemDropRate,
 } from '../services/item.service.js';
-import { isAdmin } from '../utils/isAdmin.js';
 import { checkEventActive } from '../services/event.service.ts';
+import itemModels from '../models/item.models.ts';
+import { eventItemList } from '../services/eventItem.service.ts';
 
-export async function getItem(req: Request, res: Response) {
+export async function getItemList(req: Request, res: Response) {
     try {
         const page = req.query.page;
         const limit = req.query.limit;
-        const checkEvent = await checkEventActive();
-        if (checkEvent) {
-            const item = await itemGet({
-                page,
-                limit,
-                event: checkEvent._id,
-            });
-            res.json({
-                message: 'get Item success',
-                data: item,
-            });
-        } else {
-            res.json({
-                message: 'No Active event',
-            });
-        }
+        const item = await itemGet({
+            page,
+            limit,
+        });
+        res.json({
+            message: 'get Item success',
+            data: item,
+        });
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -43,23 +32,25 @@ export async function getItemGroup(req: Request, res: Response) {
     try {
         const checkEvent = await checkEventActive();
         if (checkEvent) {
-            const item = await itemGroup(checkEvent._id);
-            res.json({
-                message: 'get Item success',
-                data: item,
+            const eventItems = await eventItemList({ event: checkEvent._id });
+            const arrayItems = eventItems.map((item: any) => {
+                return item.item;
             });
-
+            const item = await itemGroup(arrayItems);
             res.json({
                 message: 'get Item success',
                 data: item,
             });
         } else {
-            res.json({
-                message: 'No Active event',
+            res.status(404).json({
+                status: 'NOT FOUND!',
+                errors: {
+                    message: 'No Active event',
+                },
             });
         }
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -67,43 +58,21 @@ export async function getItemGroup(req: Request, res: Response) {
 
 export async function postCreateItem(req: Request, res: Response) {
     try {
-        const roleId = req.user?.role;
-        const { name, image, tier, dropRate } = req.body;
+        const { name, image, tier } = req.body;
 
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
-
-        const checkSum: any[] = await sumItemDropRate();
-        const total = checkSum[0]?.total || 0;
-        if (total + dropRate > 100) {
-            return res.status(422).json({
-                status: 'Unprocessable Entity',
-                errors: {
-                    field: 'dropRate',
-                    message: `Total of drop rate must be within 100%`,
-                },
-            });
-        } else {
-            const data = await itemCreate({
-                name,
-                image,
-                tier,
-                dropRate,
-            });
+        const data = new itemModels({
+            name,
+            image,
+            tier,
+        });
+        data.save().then(result => {
             res.json({
                 message: 'create Item success',
-                data,
+                data: result,
             });
-        }
+        });
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -111,45 +80,27 @@ export async function postCreateItem(req: Request, res: Response) {
 
 export async function putUpdateItem(req: Request, res: Response) {
     try {
-        const roleId = req.user?.role;
         const id = req.params.id;
-        const { name, image, tier, dropRate } = req.body;
-
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
+        const { name, image, tier } = req.body;
 
         const selectedItem = await itemDetail({ id: id || '' });
         if (selectedItem) {
-            const checkSum: any[] = await sumItemDropRate();
-            const total = (checkSum[0]?.total || 0) - selectedItem.dropRate;
-            if (total + dropRate > 100) {
-                return res.status(422).json({
-                    status: 'Unprocessable Entity',
-                    errors: {
-                        field: 'dropRate',
-                        message: `Total of drop rate must be within 100%`,
-                    },
+            await itemModels
+                .updateOne(
+                    { _id: id },
+                    {
+                        name,
+                        image,
+                        tier,
+                    }
+                )
+                .exec()
+                .then(result => {
+                    res.json({
+                        message: 'Update Item success',
+                        data: result,
+                    });
                 });
-            } else {
-                const data = await itemUpdate({
-                    id: id || '',
-                    name,
-                    image,
-                    tier,
-                    dropRate,
-                });
-                res.json({
-                    message: 'Update Item success',
-                    data,
-                });
-            }
         } else {
             return res.status(404).json({
                 status: 'Not found!',
@@ -159,61 +110,7 @@ export async function putUpdateItem(req: Request, res: Response) {
             });
         }
     } catch (error) {
-        res.status(404).json({
-            message: error,
-        });
-    }
-}
-
-export async function patchEditDropRate(req: Request, res: Response) {
-    try {
-        const roleId = req.user?.role;
-        const id = req.params.id;
-        const { tier, dropRate } = req.body;
-
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
-
-        const selectedItem = await itemDetail({ id: id || '' });
-        if (selectedItem) {
-            const checkSum: any[] = await sumItemDropRate();
-            const total = (checkSum[0]?.total || 0) - selectedItem.dropRate;
-            if (total + dropRate > 100) {
-                return res.status(422).json({
-                    status: 'Unprocessable Entity',
-                    errors: {
-                        field: 'dropRate',
-                        message: `Total of drop rate must be within 100%`,
-                    },
-                });
-            } else {
-                const data = await itemEditDropRate({
-                    id: id || '',
-                    tier,
-                    dropRate,
-                });
-                res.json({
-                    message: 'Edit Drop Rate Item success',
-                    data,
-                });
-            }
-        } else {
-            return res.status(404).json({
-                status: 'Not found!',
-                errors: {
-                    message: `Item not found!`,
-                },
-            });
-        }
-    } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }
@@ -221,18 +118,7 @@ export async function patchEditDropRate(req: Request, res: Response) {
 
 export async function deleteItem(req: Request, res: Response) {
     try {
-        const roleId = req.user?.role;
         const id = req.params.id;
-
-        const checkRole = await isAdmin({ id: roleId || '' });
-        if (!checkRole) {
-            res.status(403).json({
-                status: 'Forbidden access!',
-                errors: {
-                    message: 'Your access role is forbidden',
-                },
-            });
-        }
 
         const selectedItem = await itemDetail({ id: id || '' });
         if (selectedItem) {
@@ -252,7 +138,7 @@ export async function deleteItem(req: Request, res: Response) {
             });
         }
     } catch (error) {
-        res.status(404).json({
+        res.status(400).json({
             message: error,
         });
     }

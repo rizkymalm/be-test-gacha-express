@@ -2,40 +2,39 @@ import express from 'express';
 import { authenticateToken } from '../middleware/authenticateToken .js';
 import {
     deleteItem,
-    getItem,
+    getItemList,
     getItemGroup,
-    patchEditDropRate,
     postCreateItem,
     putUpdateItem,
 } from '../controllers/item.controller.js';
-import { validateDropRate } from '../middleware/item.middleware.js';
-import { createItemRules, editDropRateRules } from '../lib/itemValidationRules.js';
+import {
+    createItemRules,
+} from '../lib/itemValidationRules.js';
+import { validateAdminRole } from '../middleware/role.middleware.ts';
 
 const itemRouter = express.Router();
-
-itemRouter.get('/', authenticateToken, getItem);
 itemRouter.get('/group', authenticateToken, getItemGroup);
+itemRouter.get('/admin/list', authenticateToken, validateAdminRole, getItemList);
 itemRouter.post(
-    '/create',
+    '/admin/create',
     createItemRules,
-    validateDropRate,
     authenticateToken,
+    validateAdminRole,
     postCreateItem
 );
 itemRouter.put(
-    '/update/:id',
+    '/admin/update/:id',
     createItemRules,
-    validateDropRate,
     authenticateToken,
+    validateAdminRole,
     putUpdateItem
 );
-itemRouter.patch(
-    '/edit/drop-rate/:id',
-    editDropRateRules,
-    validateDropRate,
+
+itemRouter.delete(
+    '/admin/delete/:id',
     authenticateToken,
-    patchEditDropRate
+    validateAdminRole,
+    deleteItem
 );
-itemRouter.delete('/delete/:id', authenticateToken, deleteItem)
 
 export default itemRouter;
