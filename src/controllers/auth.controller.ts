@@ -13,6 +13,7 @@ import {
 import { walletCreate } from '../services/wallet.service.js';
 import { transactionCreate } from '../services/transaction.service.js';
 import { Description, ReferenceType } from '../constants/transaction.enum.js';
+import connectDB from '../config/db.js';
 
 export async function authGet(req: Request, res: Response) {
     try {
@@ -67,6 +68,7 @@ export async function postRegister(req: Request, res: Response) {
 
 export async function postLogin(req: Request, res: Response) {
     try {
+        await connectDB();
         const { email, password } = req.body;
         const login = await authLogin({ email });
         if (!login) {
