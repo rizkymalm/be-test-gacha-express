@@ -12,6 +12,7 @@ import gachaRouter from './router/gacha.router.js';
 import itemRouter from './router/item.router.js';
 import roleRouter from './router/role.router.js';
 import eventRouter from './router/event.router.ts';
+import eventItemRouter from './router/eventItem.router.ts';
 
 const app = express();
 const port = process.env.PORT;
@@ -25,12 +26,13 @@ connectDB();
 
 app.use('', router);
 app.use('/auth', authRouter);
-app.use('/role', roleRouter)
+app.use('/role', roleRouter);
 app.use('/user', userRouter);
 app.use('/wallet', walletRouter);
 app.use('/gacha', gachaRouter);
-app.use('/item', itemRouter)
+app.use('/item', itemRouter);
 app.use('/event', eventRouter);
+app.use('/event-item', eventItemRouter);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
