@@ -11,9 +11,9 @@ import walletRouter from './router/wallet.router.js';
 import gachaRouter from './router/gacha.router.js';
 import itemRouter from './router/item.router.js';
 import roleRouter from './router/role.router.js';
-import eventRouter from './router/event.router.ts';
-import eventItemRouter from './router/eventItem.router.ts';
-import historyRouter from './router/history.router.ts';
+import eventRouter from './router/event.router.js';
+import eventItemRouter from './router/eventItem.router.js';
+import historyRouter from './router/history.router.js';
 
 const app = express();
 const port = process.env.PORT;

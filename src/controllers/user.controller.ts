@@ -3,7 +3,7 @@ import { userProfile } from '../services/user.service.js';
 import {
     myInventory,
     myLatestInventory,
-} from '../services/inventory.service.ts';
+} from '../services/inventory.service.js';
 
 export async function getProfile(req: Request, res: Response) {
     try {

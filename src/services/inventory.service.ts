@@ -1,7 +1,7 @@
 import type { Types } from 'mongoose';
 import inventoryModel from '../models/inventory.models.js';
 import mongoose from 'mongoose';
-import historyModels from '../models/history.models.ts';
+import historyModels from '../models/history.models.js';
 
 interface Props {
     user: Types.ObjectId | string | string[];

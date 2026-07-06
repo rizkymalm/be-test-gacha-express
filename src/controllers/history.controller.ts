@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { historyCount, historyList } from "../services/history.service.ts";
+import { historyCount, historyList } from "../services/history.service.js";
 
 export async function getHistoryList(req: Request, res: Response) {
     try {
