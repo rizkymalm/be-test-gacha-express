@@ -1,8 +1,6 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 
-// Menggunakan global agar koneksi bisa di-reuse antar request
-// di dalam environment yang sama (caching)
 let cached = (global as any).mongoose;
 
 if (!cached) {
@@ -16,8 +14,8 @@ export default async function connectDB() {
 
     if (!cached.promise) {
         const opts = {
-            dbName: 'staging',
-            bufferCommands: true, // Ubah ke true agar Mongoose mengantre perintah
+            dbName: process.env.DATABASE_NAME!,
+            bufferCommands: true,
         };
 
         cached.promise = mongoose
