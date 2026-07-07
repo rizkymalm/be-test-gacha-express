@@ -33,6 +33,14 @@ export async function userList({ page, limit }: PropsGetWithPagination) {
             },
         },
         {
+            $lookup: {
+                from: 'wallets',
+                localField: '_id',
+                foreignField: 'user',
+                as: 'wallets',
+            },
+        },
+        {
             $unwind: '$roles',
         },
         {
