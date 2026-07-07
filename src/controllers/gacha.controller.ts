@@ -70,7 +70,7 @@ export async function getRandomGacha(req: Request, res: Response) {
             }));
             await session.withTransaction(async () => {
                 // 4. update wallet by ID
-                if (!walletUser) return undefined;
+                if (!walletUser) return;
 
                 await walletUpdateBalance({
                     id: walletUser?._id,

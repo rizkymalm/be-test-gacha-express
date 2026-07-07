@@ -25,3 +25,16 @@ export const registerRules = [
     body('role').trim().notEmpty().withMessage('Password is required'),
     validate,
 ];
+
+
+export const createUserRules = [
+    body('username').trim().notEmpty().withMessage('Username is required'),
+    body('email')
+        .trim()
+        .isEmail()
+        .withMessage('Invalid email format')
+        .normalizeEmail(),
+    body('firstName').trim().notEmpty().withMessage('Password is required'),
+    body('role').trim().notEmpty().withMessage('Password is required'),
+    validate,
+];
